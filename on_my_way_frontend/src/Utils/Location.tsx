@@ -1,1 +1,0 @@
-export enum Location { "eidsvollVerk" = "Eidsvoll Verk", "oslo" = "Oslo" };

@@ -1,6 +1,10 @@
 import Image from 'next/image';
 
-export default function Illustration({ minutesToNextTrain }) {
+type IllustrationProps = {
+    minutesToNextTrain: number
+}
+
+export default function Illustration({ minutesToNextTrain }: IllustrationProps) {
     let imageUrl: string;
     if (minutesToNextTrain > 12) {
         imageUrl = "/turtle.svg";
