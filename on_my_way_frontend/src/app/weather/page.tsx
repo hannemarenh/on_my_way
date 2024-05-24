@@ -5,7 +5,6 @@ import { WeatherData } from '../../types/Weather';
 import { useEffect, useState } from 'react';
 import { fetchWeatherData } from '../../utils/GetWeatherData';
 import WeatherDataDisplay from '../../components/WeatherDataDisplay';
-import { useQuery } from '@tanstack/react-query';
 
 export default function WeatherPage() {
     const [currentLocation, setLocation] = useState<Location>(Location.eidsvollVerk);
@@ -16,19 +15,13 @@ export default function WeatherPage() {
     const locationData: LocationData = currentLocation == Location.eidsvollVerk ? eidsvollVerkData : osloData
     const [weatherData, setWeatherData] = useState<WeatherData>();
 
-    const { data } = useQuery({
-        queryKey: [''],
-        queryFn: () => fetchWeatherData(locationData, setWeatherData),
-        staleTime: 5 * 1000,
-    });
-
     useEffect(() => {
         fetchWeatherData(locationData, setWeatherData);
     }, [locationData]);
 
 
     return (
-        <div className="sticky flex flex-col items-center justify-center h-40">
+        <div className="flex flex-col items-center justify-center mt-8">
             <LocationToggle activeLocation={currentLocation} onChange={changeLocation} />
             <div className="m-4">
                 {weatherData && <WeatherDataDisplay data={weatherData} />}
