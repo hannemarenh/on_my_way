@@ -1,53 +1,59 @@
-import { WeatherData } from "../types/Weather";
 import Image from 'next/image';
+import { WeatherData } from "../types/Weather";
 
 type WeatherDataDisplayProps = {
     data: WeatherData
 }
 export default function WeatherDataDisplay({ data }: WeatherDataDisplayProps) {
-    const lastMesauredData = data.properties.timeseries[0];
+    const numberOfHours = 5
+    const timeseries = data.properties.timeseries.slice(0, numberOfHours);
+    timeseries.push(data.properties.timeseries[numberOfHours + 4])
 
-    const imageUrlNext1Hour = "/weathericons/" + lastMesauredData.data.next_1_hours.summary.symbol_code +".svg"
-    const imageUrlNext6Hour = "/weathericons/" + lastMesauredData.data.next_6_hours.summary.symbol_code +".svg"
     return (
-        <>
-            <div>
-                Last measured value ({data.properties.timeseries[0].time}) was {data.properties.timeseries[0].data.instant.details.air_temperature}
+        <div className="w-96">
+            <div className="flex items-center align-center">
+                <div className="p-2 w-20">
+                </div>
+                <div className="p-2 w-20">
+                    Time
+                </div>
+                <div className="p-2 w-20">
+                    Temp [C]
+                </div>
+                <div className="p-2 w-20">
+                    Wind [m/s]
+                </div>
+                <div className="p-2 w-20">
+                    Rain [mm]
+                </div>
             </div>
-            <div>
-                Next hour
-                <Image
-                    src={imageUrlNext1Hour}
-                    width={50}
-                    height={50}
-                    alt={imageUrlNext1Hour}
-                />
-            </div>
-            <div>
-                Next 6 hours 
-                <Image
-                    src={imageUrlNext6Hour}
-                    width={50}
-                    height={50}
-                    alt={imageUrlNext6Hour}
-                />
-            </div>
-        </>
+            {timeseries.map((weatherData) => {
+                const imageUrl = "/weathericons/" + weatherData.data.next_1_hours.summary.symbol_code + ".svg"
+                return (
+                    <div key={weatherData.time} className="flex items-center align-center">
+                        <Image
+                            src={imageUrl}
+                            width={80}
+                            height={80}
+                            alt={imageUrl}
+                            className="pr-2"
+                        />
+                        <div className="p-2 w-20 self-center">
+                            {weatherData.time.slice(11, 16)}
+                        </div>
+                        <div className="p-2 w-20">
+                            {weatherData.data.instant.details.air_temperature}
+                        </div>
+                        <div className="p-2 w-20">
+                            {weatherData.data.instant.details.wind_speed}
+                        </div>
+                        <div className="p-2 w-20">
+                            {weatherData.data.next_1_hours.details.precipitation_amount}
+                        </div>
+                    </div>
+                )
+            })}
+
+        </div>
     )
 }
-
-//next_1_hours: {
-//    summary: {
-//        symbol_code: string;
-//    };
-//    details: {
-//        precipitation_amount: number;
-//    };
-//};
-//next_6_hours: {
-//    summary: {
-//        symbol_code: string;
-//    };
-//    details: {
-//        precipitation_amount: number;
-//    };
