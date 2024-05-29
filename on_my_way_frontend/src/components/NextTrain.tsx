@@ -25,9 +25,9 @@ export default async function NextTrain() {
     return (
         <>
             {myTrain.ArrivalStatus === 'delayed' &&
-                <p className="line-through">{myTrain.AimedDepartureTime && new Date(myTrain.AimedDepartureTime).toLocaleTimeString()}</p>
+                <p className="line-through">{myTrain.AimedDepartureTime && new Date(myTrain.AimedDepartureTime).toLocaleTimeString('no-NO')}</p>
             }
-            <p>Expected departure time: {myTrain.ExpectedDepartureTime && new Date(myTrain.ExpectedDepartureTime).toLocaleTimeString()}</p>
+            <p>Expected departure time: {myTrain.ExpectedDepartureTime && new Date(myTrain.ExpectedDepartureTime).toLocaleTimeString('no-NO')}</p>
             <p>Du har: {minutesUntilDeparture} minutter </p>
             <Illustration minutesToNextTrain={minutesUntilDeparture} />
         </>
