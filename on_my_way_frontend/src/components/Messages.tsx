@@ -13,12 +13,14 @@ export default async function Messages() {
             {situations.PtSituationElement.map((current: PtSituationElement) => {
                 const startTime = new Date(current.ValidityPeriod.StartTime).toLocaleString('no-NO');
                 const endTime = new Date(current.ValidityPeriod.EndTime).toLocaleString('no-NO');
+                const updated = new Date(current.VersionedAtTime).toLocaleString('no-NO');
                 return (
                     <div key={current.SituationNumber} className="p-4">
                         <p> Forventet fra {startTime} to {endTime}</p>
                         <p>
                             {current.Description[0]._}
                         </p>
+                        <p className="italic"> (Sist oppdatert {updated})</p>
                     </div>
                 )
             })}
