@@ -27,7 +27,8 @@ export async function fetchSiriSxData() {
         headers: {
             "Ocp-Apim-Subscription-Key": apiKey,
             "Content-Type": "application/xml",
-        }
+        },
+        next: { revalidate: 120 }
     })
     const xmlResponse = await response.text();
     return parseXml(xmlResponse);
