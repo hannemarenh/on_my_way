@@ -1,11 +1,10 @@
 "use client"
 import LocationToggleTrain from "./LocationToggleTrain";
-import { TrainStation } from "../types/LocationTrain";
+import { Direction, LineRef, TrainStation } from "../types/TrainStation";
 import { useEffect, useState } from "react";
 import NextTrain from "./NextTrain";
 import { EstimatedCall, EstimatedCalls, EstimatedVehicleJourney, SiriEtResponse } from "../types/SiriEt";
 import { fetchSiriEtData } from "../utils/GetSiriEtData";
-import { Direction, LineRef } from "../siriRequests/GenerateEtRequest";
 
 type TrainToGoProps = {
 

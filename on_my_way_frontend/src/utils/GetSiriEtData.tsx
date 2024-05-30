@@ -1,6 +1,7 @@
 "use server"
-import { EtRequestData, LineRef, generateEtRequestDataAsXml } from '../siriRequests/GenerateEtRequest';
+import { EtRequestData, generateEtRequestDataAsXml } from '../siriRequests/GenerateEtRequest';
 import { SiriEtResponse } from '../types/SiriEt';
+import { LineRef } from '../types/TrainStation';
 
 export async function fetchSiriEtData(line: LineRef) {
     const apiKey = process.env.ET_API_KEY;

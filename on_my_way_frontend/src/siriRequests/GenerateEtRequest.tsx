@@ -1,37 +1,11 @@
+import { LineRef } from "../types/TrainStation";
+
 export type EtRequestData = {
     RequestorRef: string;
 	RequestTimestamp: string;
 	LineRef: LineRef;
 };
 
-export enum LineRef {
-	R12 = "NSB:Line:L12",
-	RE11 = "NSB:Line:R11"
-}
-
-export type Direction = "north" | "south";
-
-export function getDirectionRef(lineRef: LineRef, direction: Direction) {
-	if (direction == "south") {
-		switch (lineRef) {
-			case LineRef.R12: {
-				return "KBG";
-			}
-			case LineRef.RE11: {
-				return "SKN";
-			}
-		}
-	}
-
-	switch (lineRef) {
-		case LineRef.R12: {
-			return "EVL";
-		}
-		case LineRef.RE11: {
-			return "EVL";
-		}
-	}
-}
 
 export function generateEtRequestDataAsXml({ RequestorRef, RequestTimestamp, LineRef }: EtRequestData): string {
     return (

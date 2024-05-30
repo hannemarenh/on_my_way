@@ -1,4 +1,4 @@
-import { TrainStation } from "../types/LocationTrain";
+import { TrainStation } from "../types/TrainStation";
 import { EstimatedCall } from "../types/SiriEt";
 import Illustration from "./Illustration";
 
