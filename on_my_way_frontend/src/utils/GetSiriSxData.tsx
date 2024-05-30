@@ -1,4 +1,3 @@
-import { error } from 'console';
 import { SxRequestData, generateSxRequestDataAsXml } from '../siriRequests/GenerateSxRequest';
 import { SiriSxResponse } from '../types/SiriSx';
 
@@ -10,7 +9,7 @@ export async function fetchSiriSxData() {
     const url = "https://api.banenor.no/customer-info/siri-sx/v2.1/rest";
 
     if (apiKey == undefined || requestorRef == undefined) {
-        throw error("Unable to read .env.local. This makes RequestorRef and/or API key undefined. ")
+        throw Error("Unable to read .env.local. This makes RequestorRef and/or API key undefined. ")
     }
 
     const requestData: SxRequestData = {

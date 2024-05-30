@@ -1,66 +1,41 @@
-import { error } from "console";
-import { Direction, LineRef, getDirectionRef } from "../siriRequests/GenerateEtRequest";
-import { EstimatedCall, EstimatedCalls, EstimatedVehicleJourney, SiriEtResponse } from "../types/SiriEt";
-import { fetchSiriEtData } from "../utils/GetSiriEtData";
+import { TrainStation } from "../types/LocationTrain";
+import { EstimatedCall } from "../types/SiriEt";
 import Illustration from "./Illustration";
 
-export default async function NextTrain() {
-    const dataR12: SiriEtResponse = await fetchSiriEtData(LineRef.R12);
-    const dataRE11: SiriEtResponse = await fetchSiriEtData(LineRef.RE11);
+type NextTrainProps = {
+    estimatedCalls: EstimatedCall[][]
+    activeLocation: TrainStation
+}
 
-
-    const r12: EstimatedCall[] = getEstimatedCallsToEidsvollVerk(LineRef.R12, "south", dataR12);
-    const re11: EstimatedCall[] = getEstimatedCallsToEidsvollVerk(LineRef.RE11, "south", dataRE11);
-    const trains = [...r12, ...re11]
+export default function NextTrain({ estimatedCalls, activeLocation }: NextTrainProps) {
+    const trains = estimatedCalls.reduce((acc, value) => acc.concat(value), [])
         .sort((a: EstimatedCall, b: EstimatedCall) => {
-            if (a.ExpectedDepartureTime === undefined || b.ExpectedDepartureTime === undefined) throw error("Cant find expected departure time")
+            if (a.ExpectedDepartureTime === undefined || b.ExpectedDepartureTime === undefined) throw Error("Cant find expected departure time")
             return Date.parse(a.ExpectedDepartureTime) - Date.parse(b.ExpectedDepartureTime)
         });
 
     const myTrain = trains[0];
 
-
     const timeUntilDepartue = myTrain.ExpectedDepartureTime !== undefined ? new Date(myTrain.ExpectedDepartureTime).getTime() - new Date().getTime() : 0
     const minutesUntilDeparture = Math.floor(timeUntilDepartue / 60000);
+    if (myTrain.AimedDepartureTime === undefined || myTrain.ExpectedDepartureTime === undefined) return (<>Cant find any departure time...</>)
     return (
         <>
-            {myTrain.ArrivalStatus === 'delayed' &&
-                <p className="line-through">{myTrain.AimedDepartureTime && new Date(myTrain.AimedDepartureTime).toLocaleTimeString('no-NO')}</p>
+            {myTrain.ArrivalStatus === 'delayed' ?
+                <div className="flex">
+                    <p className="p-2">Expected departure time: </p>
+                    <p className="p-2 line-through">{new Date(myTrain.AimedDepartureTime).toLocaleTimeString('no-NO')}</p>
+                    <p className="p-2">{new Date(myTrain.ExpectedDepartureTime).toLocaleTimeString('no-NO')}</p>
+                </div> :
+                <p className="p-2">Expected departure time: {new Date(myTrain.ExpectedDepartureTime).toLocaleTimeString('no-NO')}</p>
             }
-            <p>Expected departure time: {myTrain.ExpectedDepartureTime && new Date(myTrain.ExpectedDepartureTime).toLocaleTimeString('no-NO')}</p>
-            <p>Du har: {minutesUntilDeparture} minutter </p>
-            <Illustration minutesToNextTrain={minutesUntilDeparture} />
+            <div className="flex flex-col items-center">
+                <p className="p-2">Du har: {minutesUntilDeparture} minutter </p>
+                {activeLocation === TrainStation.eidsvollVerk && <Illustration minutesToNextTrain={minutesUntilDeparture} />}
+            </div>
         </>
     )
 }
 
 
-function isArray(estimatedCall: EstimatedCall | EstimatedCall[]): estimatedCall is EstimatedCall {
-    const check = estimatedCall as EstimatedCall
-    return (check).StopPointRef === undefined;
-}
-function getEstimatedCallsToEidsvollVerk(lineRef: LineRef, direction: Direction, data: SiriEtResponse) {
-    const directionRef = getDirectionRef(lineRef, direction)
-    const dataInDirectionSouth: EstimatedCalls[] = data.ServiceDelivery.EstimatedTimetableDelivery.EstimatedJourneyVersionFrame.EstimatedVehicleJourney
-        .filter((current: EstimatedVehicleJourney) => { return current.DirectionRef === directionRef })
-        .map((current: EstimatedVehicleJourney) => { return current.EstimatedCalls })
-        .filter((current): current is EstimatedCalls => !!current);
 
-    let estimatedCallsToEidsvollVerk: EstimatedCall[] = []
-
-    dataInDirectionSouth.forEach((current: EstimatedCalls) => {
-        const copy = current.EstimatedCall
-
-        if (isArray(copy)) {
-            const check = current.EstimatedCall as EstimatedCall[]
-            check.forEach((current: EstimatedCall) => {
-                if (current.StopPointName === "Eidsvoll Verk") { estimatedCallsToEidsvollVerk.push(current) }
-            })
-        }
-        else {
-            const data = current.EstimatedCall as EstimatedCall;
-            if (data.StopPointName === "Eidsvoll Verk") { estimatedCallsToEidsvollVerk.push(data) }
-        }
-    })
-    return estimatedCallsToEidsvollVerk
-}

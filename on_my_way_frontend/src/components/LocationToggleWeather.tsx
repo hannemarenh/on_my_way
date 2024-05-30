@@ -1,11 +1,11 @@
 import { Location } from '../types/Location'
 
-type LocationToggleProps = {
+type LocationToggleWeatherProps = {
     activeLocation: Location
     onChange: () => void
 }
 
-export default function LocationToggle({ activeLocation, onChange }: LocationToggleProps) {
+export default function LocationToggleWeather({ activeLocation, onChange }: LocationToggleWeatherProps) {
     const activeButtonStyle: string = "bg-gray-200 text-gray-800 font-bold py-2 px-4";
     const disabledButtonStyle: string = "bg-gray-500 text-gray-800 font-bold py-2 px-4";
     return (

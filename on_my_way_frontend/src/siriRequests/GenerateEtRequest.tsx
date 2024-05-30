@@ -2,7 +2,6 @@ export type EtRequestData = {
     RequestorRef: string;
 	RequestTimestamp: string;
 	LineRef: LineRef;
-	Direction: Direction
 };
 
 export enum LineRef {
@@ -11,7 +10,6 @@ export enum LineRef {
 }
 
 export type Direction = "north" | "south";
-
 
 export function getDirectionRef(lineRef: LineRef, direction: Direction) {
 	if (direction == "south") {
@@ -34,8 +32,8 @@ export function getDirectionRef(lineRef: LineRef, direction: Direction) {
 		}
 	}
 }
-export function generateEtRequestDataAsXml({ RequestorRef, RequestTimestamp, LineRef, Direction }: EtRequestData): string {
-	const directionRef = getDirectionRef(LineRef, Direction);
+
+export function generateEtRequestDataAsXml({ RequestorRef, RequestTimestamp, LineRef }: EtRequestData): string {
     return (
         `<Siri xmlns="http://www.siri.org.uk/siri" version="2.1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ServiceRequest>
@@ -48,7 +46,6 @@ export function generateEtRequestDataAsXml({ RequestorRef, RequestTimestamp, Lin
 				<Lines>
 					<LineDirection>
 						<LineRef>${LineRef}</LineRef>
-						<DirectionRef>${directionRef}</DirectionRef>
 					</LineDirection>
 				</Lines>
 				<Extensions>

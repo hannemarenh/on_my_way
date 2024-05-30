@@ -6,8 +6,14 @@ type WeatherDataDisplayProps = {
 }
 export default function WeatherDataDisplay({ data }: WeatherDataDisplayProps) {
     const numberOfHours = 5
-    const timeseries = data.properties.timeseries.slice(0, numberOfHours);
-    timeseries.push(data.properties.timeseries[numberOfHours + 4])
+    const hourNow = new Date().getHours();
+    const timeseriesFrom = data.properties.timeseries.findIndex((element) => {
+        return new Date(element.time).getHours() === hourNow
+    })
+
+    const timeseries = data.properties.timeseries
+        .slice(timeseriesFrom, timeseriesFrom+numberOfHours);
+    timeseries.push(data.properties.timeseries[timeseriesFrom+numberOfHours + 4])
 
     return (
         <div className="w-96">
@@ -39,7 +45,7 @@ export default function WeatherDataDisplay({ data }: WeatherDataDisplayProps) {
                             className="pr-2"
                         />
                         <div className="p-2 w-20 self-center">
-                            {weatherData.time.slice(11, 16)}
+                            {new Date(weatherData.time).toLocaleTimeString('no-NO').slice(0,5)}
                         </div>
                         <div className="p-2 w-20">
                             {weatherData.data.instant.details.air_temperature}

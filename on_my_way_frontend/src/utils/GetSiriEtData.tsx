@@ -1,4 +1,4 @@
-import { error } from 'console';
+"use server"
 import { EtRequestData, LineRef, generateEtRequestDataAsXml } from '../siriRequests/GenerateEtRequest';
 import { SiriEtResponse } from '../types/SiriEt';
 
@@ -6,18 +6,16 @@ export async function fetchSiriEtData(line: LineRef) {
     const apiKey = process.env.ET_API_KEY;
     const requestorRef = process.env.ET_REQUESTOR_REF;
     const timestamp = new Date().toISOString()
-    const direction = "south"
     const url = "https://api.banenor.no/customer-info/siri-et/v2.1/rest";
 
     if (apiKey == undefined || requestorRef == undefined) {
-        throw error("Unable to read .env.local. This makes RequestorRef and/or API key undefined. ")
+        throw Error("Unable to read .env.local. This makes RequestorRef and/or API key undefined. ")
     }
 
     const requestData: EtRequestData = {
         RequestorRef: requestorRef,
         RequestTimestamp: timestamp,
         LineRef: line,
-        Direction: direction
     };
 
     const xmlRequestBody = generateEtRequestDataAsXml(requestData);
